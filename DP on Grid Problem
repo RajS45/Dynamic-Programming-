@@ -1,1 +1,152 @@
+1.Grid unique paths.
+-> Recursion
+class Solution {
+    //Function to solve the problem using recursion
+    private int func(int i, int j) {
+        // Base case
+        if (i == 0 && j == 0) return 1;
+
+        // If we go out of bounds, there are no ways
+        if (i < 0 || j < 0) return 0;
+
+        /* Calculate the number of ways by
+        moving up and left recursively*/
+        int up = func(i - 1, j);
+        int left = func(i, j - 1);
+
+        // Return the total ways
+        return up + left;
+    }
+    /*Function to count the total ways
+    to reach (0,0) from (m-1,n-1)*/
+    public int uniquePaths(int m, int n) {
+        // Return the total count (0-based indexing)
+        return func(m - 1, n - 1);
+    }
+
+    public static void main(String[] args) {
+        int m = 3;
+        int n = 2;
+
+        // Create an instance of Solution class
+        Solution sol = new Solution();
+
+        // Call the uniquePaths function and print the result
+        System.out.println("Number of ways: " + sol.uniquePaths(m, n));
+    }
+}
+->Memoization
+import java.util.*;
+
+class Solution {
+    //Function to solve the problem using recursion
+    private int func(int i, int j, int[][] dp) {
+        // Base case
+        if (i == 0 && j == 0) return 1;
+
+        // If we go out of bounds, there are no ways
+        if (i < 0 || j < 0) return 0;
+        
+        /* If the value for this cell 
+        is already computed, return it.*/
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        /* Calculate the number of ways by
+        moving up and left recursively*/
+        int up = func(i - 1, j, dp);
+        int left = func(i, j - 1, dp);
+
+        /* Store the result in dp array
+        and return the total ways*/
+        return dp[i][j] = up + left;
+    }
+    /*Function to count the total ways
+    to reach (0,0) from (m-1,n-1)*/
+    public int uniquePaths(int m, int n) {
+        // Declare a 2D DP array to store results
+        int dp[][] = new int[m][n];
+        
+        /* Initialize the DP array with 
+        -1 to indicate uncomputed values*/
+        for (int[] row : dp)
+            Arrays.fill(row, -1);
+            
+        // Return the total count (0-based indexing)
+        return func(m - 1, n - 1, dp);
+    }
+
+    public static void main(String[] args) {
+        int m = 3;
+        int n = 2;
+
+        // Create an instance of Solution class
+        Solution sol = new Solution();
+
+        // Call the uniquePaths function and print the result
+        System.out.println("Number of ways: " + sol.uniquePaths(m, n));
+    }
+}
+->Tabulation.
+class Solution {
+    // Function to solve the problem using tabulation
+    int func(int m, int n, int[][] dp) {
+        // Loop through the grid using two nested loops
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // Base condition
+                if (i == 0 && j == 0) {
+                    dp[i][j] = 1;
+                    /* Skip the rest of the loop and 
+                    continue with the next iteration.*/
+                    continue; 
+                }
+
+                /* Initialize variables to store the number
+                of ways from cell above (up) and left (left)*/
+                int up = 0;
+                int left = 0;
+
+                /* If we are not at first row (i > 0), update
+                'up' with the value from the cell above*/
+                if (i > 0)
+                    up = dp[i - 1][j];
+
+                /* If we are not at the first column (j > 0),
+                update 'left' with value from the cell to left*/
+                if (j > 0)
+                    left = dp[i][j - 1];
+
+                /* Calculate the number of ways to reach the 
+                current cell by adding 'up' and 'left'*/
+                dp[i][j] = up + left;
+            }
+        }
+
+        // The result is stored in bottom-right cell (m-1, n-1)
+        return dp[m - 1][n - 1];
+    }
+
+    /* Function to count the total ways 
+    to reach (0,0) from (m-1,n-1)*/
+    public int uniquePaths(int m, int n) {
+        /* Initialize a memoization table (dp)
+        to store the results of subproblems*/
+        int[][] dp = new int[m][n];
+
+        // Return the total count (0-based indexing)
+        return func(m, n, dp);
+    }
+
+    public static void main(String[] args) {
+        int m = 3;
+        int n = 2;
+
+        // Create an instance of Solution class
+        Solution sol = new Solution();
+
+        // Call the uniquePaths function and print the result
+        System.out.println("Number of ways: " + sol.uniquePaths(m, n));
+    }
+}
 
